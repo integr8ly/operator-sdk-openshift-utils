@@ -1,0 +1,11 @@
+{
+  "apiVersion": "integreatly.org/v1alpha1",
+  "kind": "InvalidObject",
+  "metadata": {
+    "name": "invalid-object"
+  },
+  "spec": {
+    "field_1": "something",
+    "invalid": true
+  }
+}
