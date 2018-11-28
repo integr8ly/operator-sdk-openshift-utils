@@ -7,6 +7,8 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/rest"
+	"io"
+	"io/ioutil"
 )
 
 func New(restConfig *rest.Config, data []byte) (*Tmpl, error) {
@@ -21,6 +23,15 @@ func New(restConfig *rest.Config, data []byte) (*Tmpl, error) {
 	}
 
 	return tmpl, nil
+}
+
+func FromReader(restConfig *rest.Config, reader io.Reader) (*Tmpl, error) {
+	data, err := ioutil.ReadAll(reader)
+	if err != nil {
+		return nil, err
+	}
+
+	return New(restConfig, data)
 }
 
 func NoFilterFn(obj *runtime.Object) error {

@@ -24,6 +24,23 @@ func objBody(object interface{}) io.ReadCloser {
 	return ioutil.NopCloser(bytes.NewReader([]byte(output)))
 }
 
+type TestReader struct {
+	data []byte
+	readIndex int64
+}
+
+func (r *TestReader) Read(p []byte) (n int, err error) {
+	if r.readIndex >= int64(len(r.data)) {
+		err = io.EOF
+		return
+	}
+
+	n = copy(p, r.data[r.readIndex:])
+	r.readIndex += int64(n)
+	return
+}
+
+
 func TestNew(t *testing.T) {
 	cases := []struct {
 		Name        string
@@ -48,6 +65,49 @@ func TestNew(t *testing.T) {
 
 		if !tc.ExpectError && err != nil {
 			t.Fatalf("Test failed: %v", err)
+		}
+	}
+}
+
+
+
+func TestFromReader(t *testing.T) {
+	cases := []struct {
+		Name        string
+		Template    func() (*Tmpl, error)
+		ExpectError bool
+	}{
+		{
+			Name: "Should create a new template",
+			Template: func() (*Tmpl, error) {
+				b, err := ioutil.ReadFile("_testdata/template.json")
+				if err != nil {
+					return nil, err
+				}
+
+				reader := &TestReader{
+					data: b,
+				}
+
+				return FromReader(&rest.Config{}, reader)
+			},
+			ExpectError: false,
+		},
+	}
+
+	for _, tc := range cases {
+		tmpl, err := tc.Template()
+
+		if tc.ExpectError && err == nil {
+			t.Fatal("Expected error but got none")
+		}
+
+		if !tc.ExpectError && err != nil {
+			t.Fatalf("Test failed: %v", err)
+		}
+
+		if len(tmpl.Raw) == 0 {
+			t.Fatalf("raw data from reader is empty: %v", tmpl)
 		}
 	}
 }
