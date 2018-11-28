@@ -85,8 +85,12 @@ if err != nil {
 Get the runtime objects:
 
 ```go
+//copying to an existing slice
 objects := make([]runtime.Object, 0)
 tmpl.CopyObjects(template.NoFilterFn, &objects)
+
+//retrieving it
+objects := tmpl.GetObjects(template.NoFilterFn)
 ```
 
 Creating runtime objects in the sdk (0.1.1):
@@ -130,8 +134,10 @@ func (r *ReconcileDeployment) DeployTemplate(cr *integreatlyv1alpha1.TDeployment
         return err
     }
 
-    objects := make([]runtime.Object, 0)
-    tmpl.CopyObjects(template.NoFilterFn, &objects)
+    /*objects := make([]runtime.Object, 0)
+    tmpl.CopyObjects(template.NoFilterFn, &objects)*/
+    
+    objects := tmpl.GetObjects(template.NoFilterFn)
 
     for _, obj := range objects {
         uo, _ := kubernetes.UnstructuredFromRuntimeObject(obj)
