@@ -130,6 +130,7 @@ func TestTmpl_Process(t *testing.T) {
 
 				return &Tmpl{
 					Raw:        b,
+					Source:     &v1.Template{},
 					RestClient: client,
 				}
 			},

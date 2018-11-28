@@ -1,8 +1,6 @@
 package template
 
 import (
-	"encoding/json"
-
 	"github.com/integr8ly/operator-sdk-openshift-utils/pkg/api/kubernetes"
 	"github.com/integr8ly/operator-sdk-openshift-utils/pkg/api/schemes"
 	v1template "github.com/openshift/api/template/v1"
@@ -55,22 +53,12 @@ func (t *Tmpl) Bootstrap(restConfig *rest.Config, opts TmplOpt) error {
 }
 
 func (t *Tmpl) Process(params map[string]string, ns string) error {
-	resource, err := json.Marshal(t.Source)
-	if err != nil {
-		return err
-	}
-
-	jsonData, err := kubernetes.LoadKubernetesResource(t.Raw)
-	if err != nil {
-		return err
-	}
-
-	t.Source = jsonData.(*v1template.Template)
+	var err error
 
 	result := t.RestClient.
 		Post().
 		Namespace(ns).
-		Body(resource).
+		Body(t.Raw).
 		Resource("processedtemplates").
 		Do()
 
