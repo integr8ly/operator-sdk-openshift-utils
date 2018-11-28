@@ -24,6 +24,25 @@ It can now be installed by running `dep ensure`
 
 ## Usage
 
+First of all, you need to register openshift scheme types in your operator (the path of this file is usually `pkg/apis/$group/addtoscheme_$group_$version.go`):
+
+
+```
+package apis
+
+import (
+    "github.com/integr8ly/deployment-operator/pkg/apis/integreatly/v1alpha1"
+    "github.com/integr8ly/operator-sdk-openshift-utils/pkg/api/schemes"
+)
+
+func init() {
+    // Register the types with the Scheme so the components can map objects to GroupVersionKinds and back
+    AddToSchemes = append(AddToSchemes, v1alpha1.SchemeBuilder.AddToScheme)
+    AddToSchemes = append(AddToSchemes, schemes.AddToScheme)
+}
+
+```
+
 You will probably need to import these modules:
 
 ```
