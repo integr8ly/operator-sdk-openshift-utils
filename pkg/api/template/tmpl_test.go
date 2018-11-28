@@ -283,6 +283,75 @@ func TestTmpl_FillObjects(t *testing.T) {
 	}
 }
 
+func TestTmpl_GetObjects(t *testing.T) {
+	cases := []struct {
+		Name       string
+		Objects    []runtime.Object
+		CallbackFn FilterFn
+		Validate   func(tmpl *Tmpl, objects []runtime.Object)
+	}{
+		{
+			Name: "Should copy all objects",
+			Objects: []runtime.Object{
+				&runtime.Unknown{},
+				&runtime.Unknown{},
+				&runtime.Unknown{},
+			},
+			CallbackFn: NoFilterFn,
+			Validate: func(tmpl *Tmpl, objects []runtime.Object) {
+				if len(tmpl.Objects) != len(objects) {
+					t.Fatalf("Failed to copy objects: %v", objects)
+				}
+			},
+		},
+		{
+			Name: "Should copy json objects only",
+			Objects: []runtime.Object{
+				&runtime.Unknown{
+					ContentType: "application/json",
+				},
+				&runtime.Unknown{
+					ContentType: "text/xml",
+				},
+				&runtime.Unknown{
+					ContentType: "application/json",
+				},
+			},
+			CallbackFn: func(obj *runtime.Object) error {
+				o := *obj
+
+				u := o.(*runtime.Unknown)
+				if u.ContentType == "text/xml" {
+					return errors.New("xml not allowed")
+				}
+
+				return nil
+			},
+			Validate: func(tmpl *Tmpl, objects []runtime.Object) {
+				if len(objects) != 2 {
+					t.Fatalf("Failed to copy objects: %v", objects)
+				}
+
+				for _, obj := range objects {
+					u := obj.(*runtime.Unknown)
+					if u.ContentType != "application/json" {
+						t.Fatalf("Invalid object copied: %v", u)
+					}
+				}
+			},
+		},
+	}
+
+	for _, tc := range cases {
+		tmpl := &Tmpl{
+			Objects: tc.Objects,
+		}
+		objs := tmpl.GetObjects(tc.CallbackFn)
+
+		tc.Validate(tmpl, objs)
+	}
+}
+
 func TestTmpl_CopyObjects(t *testing.T) {
 	cases := []struct {
 		Name       string
