@@ -41,6 +41,37 @@ if err != nil {
 }
 ```
 
+You can also create a Template using a reader interface:
+
+```go
+type TemplateReader struct {
+    data []byte
+    readIndex int64
+}
+
+func (r *TemplateReader) Read(p []byte) (n int, err error) {
+    if r.readIndex >= int64(len(r.data)) {
+        err = io.EOF
+        return
+    }
+
+    n = copy(p, r.data[r.readIndex:])
+    r.readIndex += int64(n)
+    return
+}
+
+b, err := ioutil.ReadFile("_testdata/template.json")
+if err != nil {
+    panic("Could not read file")
+}
+
+reader := &TemplateReader{
+    data: b,
+}
+
+tmpl := template.FromReader(restConfig, reader)
+```
+
 Process the template:
 
 ```go
