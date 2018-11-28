@@ -25,14 +25,6 @@ type Tmpl struct {
 
 type FilterFn func(obj *runtime.Object) error
 
-type Interface interface {
-	Bootstrap(restConfig *rest.Config, opts TmplOpt) error
-	Process(params map[string]string, ns string) error
-	FillObjects(rawObjects []runtime.RawExtension) error
-	FillParams(tmpl *v1template.Template, params map[string]string)
-	CopyObjects(filter FilterFn, objects *[]runtime.Object)
-}
-
 type TmplOpt struct {
 	ApiKind     string
 	ApiVersion  string
