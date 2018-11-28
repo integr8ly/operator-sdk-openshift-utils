@@ -4,11 +4,11 @@ import (
 	"github.com/integr8ly/operator-sdk-openshift-utils/pkg/api/kubernetes"
 	"github.com/integr8ly/operator-sdk-openshift-utils/pkg/api/schemes"
 	v1template "github.com/openshift/api/template/v1"
+	"io"
+	"io/ioutil"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/rest"
-	"io"
-	"io/ioutil"
 )
 
 func New(restConfig *rest.Config, data []byte) (*Tmpl, error) {

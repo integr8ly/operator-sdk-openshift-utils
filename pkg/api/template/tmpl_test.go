@@ -25,7 +25,7 @@ func objBody(object interface{}) io.ReadCloser {
 }
 
 type TestReader struct {
-	data []byte
+	data      []byte
 	readIndex int64
 }
 
@@ -39,7 +39,6 @@ func (r *TestReader) Read(p []byte) (n int, err error) {
 	r.readIndex += int64(n)
 	return
 }
-
 
 func TestNew(t *testing.T) {
 	cases := []struct {
@@ -68,8 +67,6 @@ func TestNew(t *testing.T) {
 		}
 	}
 }
-
-
 
 func TestFromReader(t *testing.T) {
 	cases := []struct {
