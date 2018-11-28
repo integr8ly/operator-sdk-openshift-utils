@@ -14,7 +14,6 @@ import (
 	"encoding/json"
 
 	"github.com/integr8ly/operator-sdk-openshift-utils/pkg/api/schemes"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var (
@@ -24,8 +23,6 @@ var (
 )
 
 func init() {
-	metav1.AddToGroupVersion(scheme, schema.GroupVersion{Version: "v1"})
-
 	schemes.AddToScheme(scheme)
 }
 

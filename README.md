@@ -109,7 +109,7 @@ Full sample code:
 ```go
 func (r *ReconcileDeployment) DeployTemplate(cr *integreatlyv1alpha1.TDeployment) error {
     var err error
-    templateData, err := r.box.Find(cr.Spec.Template.Path)
+    templateData, err := ioutil.ReadFile(cr.Spec.Template.Path)
     if err != nil {
         return err
     }
