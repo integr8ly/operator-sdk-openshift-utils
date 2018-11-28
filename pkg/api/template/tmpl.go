@@ -9,6 +9,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/rest"
+	"github.com/sirupsen/logrus"
 )
 
 func New(restConfig *rest.Config, data []byte) (*Tmpl, error) {
@@ -59,6 +60,13 @@ func (t *Tmpl) Process(params map[string]string, ns string) error {
 	if err != nil {
 		return err
 	}
+
+	jsonData, err := kubernetes.LoadKubernetesResource(t.Raw)
+	if err != nil {
+		return err
+	}
+
+	t.Source = jsonData.(*v1template.Template)
 
 	result := t.RestClient.
 		Post().
