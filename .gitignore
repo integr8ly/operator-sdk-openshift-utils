@@ -13,3 +13,6 @@
 
 # IDEs and editors
 .idea
+
+# Dependency folders
+vendor
