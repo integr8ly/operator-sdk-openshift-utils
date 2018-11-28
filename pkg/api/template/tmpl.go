@@ -119,11 +119,19 @@ func (t *Tmpl) fillParams(params map[string]string) {
 	}
 }
 
-func (t *Tmpl) CopyObjects(filter FilterFn, objects *[]runtime.Object) {
+func (t *Tmpl) GetObjects(filter FilterFn) []runtime.Object {
+	objects := make([]runtime.Object, 0)
+
 	for _, obj := range t.Objects {
 		err := filter(&obj)
 		if err == nil {
-			*objects = append(*objects, obj.DeepCopyObject())
+			objects = append(objects, obj.DeepCopyObject())
 		}
 	}
+
+	return objects
+}
+
+func (t *Tmpl) CopyObjects(filter FilterFn, objects *[]runtime.Object) {
+	*objects = t.GetObjects(filter)
 }
