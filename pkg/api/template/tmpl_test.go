@@ -269,7 +269,7 @@ func TestTmpl_FillObjects(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		err := tc.Template.FillObjects(tc.Extensions())
+		err := tc.Template.fillObjects(tc.Extensions())
 
 		if tc.ExpectError && err == nil {
 			t.Fatal("Expected error but got none")
@@ -405,7 +405,7 @@ func TestTmpl_FillParams(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc.Template.FillParams(tc.Params)
+		tc.Template.fillParams(tc.Params)
 		tc.Validate(tc.Template, tc.Params)
 	}
 }

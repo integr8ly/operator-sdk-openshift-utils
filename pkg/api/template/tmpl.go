@@ -88,9 +88,9 @@ func (t *Tmpl) Process(params map[string]string, ns string) error {
 	}
 
 	t.Source = templateObject.(*v1template.Template)
-	t.FillParams(params)
+	t.fillParams(params)
 
-	err = t.FillObjects(t.Source.Objects)
+	err = t.fillObjects(t.Source.Objects)
 	if err != nil {
 		return err
 	}
@@ -98,7 +98,7 @@ func (t *Tmpl) Process(params map[string]string, ns string) error {
 	return nil
 }
 
-func (t *Tmpl) FillObjects(rawObjects []runtime.RawExtension) error {
+func (t *Tmpl) fillObjects(rawObjects []runtime.RawExtension) error {
 	for _, rawObject := range rawObjects {
 		obj, err := kubernetes.LoadKubernetesResource(rawObject.Raw)
 		if err != nil {
@@ -111,7 +111,7 @@ func (t *Tmpl) FillObjects(rawObjects []runtime.RawExtension) error {
 	return nil
 }
 
-func (t *Tmpl) FillParams(params map[string]string) {
+func (t *Tmpl) fillParams(params map[string]string) {
 	for i, param := range t.Source.Parameters {
 		if value, ok := params[param.Name]; ok {
 			t.Source.Parameters[i].Value = value
