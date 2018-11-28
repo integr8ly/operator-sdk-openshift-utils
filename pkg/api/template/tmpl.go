@@ -9,7 +9,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/rest"
-	"github.com/sirupsen/logrus"
 )
 
 func New(restConfig *rest.Config, data []byte) (*Tmpl, error) {
