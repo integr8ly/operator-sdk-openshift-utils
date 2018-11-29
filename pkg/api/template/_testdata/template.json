@@ -1,0 +1,144 @@
+{
+  "kind": "Template",
+  "apiVersion": "template.openshift.io/v1",
+  "metadata": {
+    "name": "tutorial-web-app",
+    "selfLink": "/apis/template.openshift.io/v1/namespaces/myproject/processedtemplates/tutorial-web-app",
+    "creationTimestamp": null
+  },
+  "objects": [{
+    "apiVersion": "apps.openshift.io/v1",
+    "kind": "DeploymentConfig",
+    "metadata": {
+      "labels": {
+        "app": "tutorial-web-app"
+      },
+      "name": "tutorial-web-app"
+    },
+    "spec": {
+      "replicas": 1,
+      "revisionHistoryLimit": 2,
+      "selector": {
+        "app": "tutorial-web-app"
+      },
+      "strategy": {
+        "rollingParams": {
+          "timeoutSeconds": 3600
+        },
+        "type": "Rolling"
+      },
+      "template": {
+        "metadata": {
+          "labels": {
+            "app": "tutorial-web-app"
+          }
+        },
+        "spec": {
+          "containers": [{
+            "env": [{
+              "name": "KUBERNETES_NAMESPACE",
+              "valueFrom": {
+                "fieldRef": {
+                  "fieldPath": "metadata.namespace"
+                }
+              }
+            }, {
+              "name": "OPENSHIFT_OAUTHCLIENT_ID",
+              "value": "tutorial-web-app"
+            }, {
+              "name": "OPENSHIFT_HOST",
+              "value": ""
+            }, {
+              "name": "NODE_ENV",
+              "value": "production"
+            }, {
+              "name": "SSO_ROUTE",
+              "value": ""
+            }],
+            "image": "quay.io/integreatly/tutorial-web-app:latest",
+            "imagePullPolicy": "IfNotPresent",
+            "name": "tutorial-web-app",
+            "ports": [{
+              "containerPort": 5001,
+              "name": "http",
+              "protocol": "TCP"
+            }]
+          }]
+        }
+      },
+      "triggers": [{
+        "type": "ConfigChange"
+      }]
+    }
+  }, {
+    "apiVersion": "v1",
+    "kind": "Service",
+    "metadata": {
+      "labels": {
+        "app": "tutorial-web-app"
+      },
+      "name": "tutorial-web-app"
+    },
+    "spec": {
+      "ports": [{
+        "name": "http",
+        "port": 5001
+      }],
+      "selector": {
+        "app": "tutorial-web-app"
+      }
+    }
+  }, {
+    "apiVersion": "route.openshift.io/v1",
+    "kind": "Route",
+    "metadata": {
+      "labels": {
+        "app": "tutorial-web-app"
+      },
+      "name": "tutorial-web-app"
+    },
+    "spec": {
+      "tls": {
+        "termination": "edge"
+      },
+      "to": {
+        "kind": "Service",
+        "name": "tutorial-web-app"
+      }
+    }
+  }],
+  "parameters": [{
+    "name": "OPENSHIFT_OAUTHCLIENT_ID",
+    "displayName": "OAuthClient ID",
+    "description": "The OAuthClient id in OpenShift to use for auth",
+    "value": "tutorial-web-app",
+    "required": true
+  }, {
+    "name": "OPENSHIFT_HOST",
+    "displayName": "OpenShift Host",
+    "description": "The OpenShift master/api host e.g. openshift.example.com:8443. If blank, mock data (and mock service URL params) will be used."
+  }, {
+    "name": "WEBAPP_IMAGE",
+    "value": "quay.io/integreatly/tutorial-web-app",
+    "required": true
+  }, {
+    "name": "WEBAPP_IMAGE_TAG",
+    "value": "latest",
+    "required": true
+  }, {
+    "name": "FUSE_URL",
+    "description": "Mock URL for Fuse. Only used if OPENSHIFT_HOST is empty"
+  }, {
+    "name": "LAUNCHER_URL",
+    "description": "Mock URL for Launcher. Only used if OPENSHIFT_HOST is empty"
+  }, {
+    "name": "CHE_URL",
+    "description": "Mock URL for Che. Only used if OPENSHIFT_HOST is empty"
+  }, {
+    "name": "ENMASSE_URL",
+    "description": "Mock URL for EnMasse. Only used if OPENSHIFT_HOST is empty"
+  }, {
+    "name": "SSO_ROUTE",
+    "description": "Openshift SSO URL"
+  }]
+}
