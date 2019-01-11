@@ -13,11 +13,16 @@ import (
 
 func New(restConfig *rest.Config, data []byte) (*Tmpl, error) {
 	tmpl := &Tmpl{
-		Source: &v1template.Template{},
-		Raw:    data,
+		Raw: data,
 	}
 
-	err := tmpl.Bootstrap(restConfig, TmplDefaultOpts)
+	res, err := kubernetes.LoadKubernetesResource(tmpl.Raw)
+	if err != nil {
+		return nil, err
+	}
+	tmpl.Source = res.(*v1template.Template)
+
+	err = tmpl.Bootstrap(restConfig, TmplDefaultOpts)
 	if err != nil {
 		return nil, err
 	}
@@ -66,10 +71,22 @@ func (t *Tmpl) Bootstrap(restConfig *rest.Config, opts TmplOpt) error {
 func (t *Tmpl) Process(params map[string]string, ns string) error {
 	var err error
 
+	t.fillParams(params)
+
+	uo, err := kubernetes.UnstructuredFromRuntimeObject(t.Source.DeepCopyObject())
+	if err != nil {
+		return err
+	}
+
+	jsonData, err := uo.MarshalJSON()
+	if err != nil {
+		return err
+	}
+
 	result := t.RestClient.
 		Post().
 		Namespace(ns).
-		Body(t.Raw).
+		Body(jsonData).
 		Resource("processedtemplates").
 		Do()
 
@@ -88,7 +105,6 @@ func (t *Tmpl) Process(params map[string]string, ns string) error {
 	}
 
 	t.Source = templateObject.(*v1template.Template)
-	t.fillParams(params)
 
 	err = t.fillObjects(t.Source.Objects)
 	if err != nil {

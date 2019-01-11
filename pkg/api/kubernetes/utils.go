@@ -31,7 +31,7 @@ func decoder(gv schema.GroupVersion, codecs serializer.CodecFactory) runtime.Dec
 	return codec
 }
 
-func runtimeObjectFromUnstructured(u *unstructured.Unstructured) (runtime.Object, error) {
+func RuntimeObjectFromUnstructured(u *unstructured.Unstructured) (runtime.Object, error) {
 	gvk := u.GroupVersionKind()
 	decoder := decoderFunc(gvk.GroupVersion(), codecs)
 
@@ -80,7 +80,7 @@ func LoadKubernetesResource(jsonData []byte) (runtime.Object, error) {
 		return nil, err
 	}
 
-	return runtimeObjectFromUnstructured(&u)
+	return RuntimeObjectFromUnstructured(&u)
 }
 
 func JsonIfYaml(source []byte, filename string) ([]byte, error) {
