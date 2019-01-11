@@ -29,7 +29,7 @@ test/integration:
 	@go test -v -race -cover ./test/integration -args -master=${MASTER_URL}
 
 .PHONY: build/api
-build/all:
+build/api:
 	@go build ${APIS}/kubernetes
 	@go build ${APIS}/schemes
 	@go build ${APIS}/template

@@ -186,6 +186,15 @@ Smoke tests (checks syntax + unit tests):
 make test/smoke
 ```
 
+Integration tests
+
+No need to set `MASTER_URL` var if you are already logged in kubernetes.
+
+```sh
+make test/integration
+make test/integration MASTER_URL=master.url
+```
+
 Fixing code formatting:
 
 ```sh
