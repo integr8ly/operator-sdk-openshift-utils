@@ -74,6 +74,12 @@
   revision = "24818f796faf91cd76ec7bddd72458fbced7a6c1"
 
 [[projects]]
+  name = "github.com/imdario/mergo"
+  packages = ["."]
+  revision = "9f23e2d6bd2a77f959b2bf6acdbefd708a83a4a4"
+  version = "v0.3.6"
+
+[[projects]]
   name = "github.com/json-iterator/go"
   packages = ["."]
   revision = "1624edc4454b8682399def8740d46db5e4362ba4"
@@ -275,6 +281,7 @@
   revision = "103fd098999dc9c0c88536f5c9ad2e5da39373ae"
 
 [[projects]]
+  branch = "release-8.0"
   name = "k8s.io/client-go"
   packages = [
     "kubernetes/scheme",
@@ -286,15 +293,20 @@
     "rest",
     "rest/fake",
     "rest/watch",
+    "tools/auth",
+    "tools/clientcmd",
     "tools/clientcmd/api",
+    "tools/clientcmd/api/latest",
+    "tools/clientcmd/api/v1",
     "tools/metrics",
     "transport",
     "util/cert",
     "util/connrotation",
     "util/flowcontrol",
+    "util/homedir",
     "util/integer"
   ]
-  revision = "1f13a808da65775f22cbf47862c4e5898d8f4ca1"
+  revision = "573fc71f7a51eb0720524b3973d465dcde5566e6"
 
 [[projects]]
   name = "k8s.io/code-generator"
@@ -362,6 +374,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "daf4af31f1dd1eedf93225ef859afcc70c53b0e80899166c9596814461ce2446"
+  inputs-digest = "257d131de892fb115b02517eff4b81f7883fa2b5279fc73fcf679c2cb95279de"
   solver-name = "gps-cdcl"
   solver-version = 1
